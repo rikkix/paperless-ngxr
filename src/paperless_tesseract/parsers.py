@@ -462,9 +462,10 @@ def post_process_text(text):
     if not text:
         return None
 
-    collapsed_spaces = re.sub(r"([^\S\r\n]+)", " ", text)
-    no_leading_whitespace = re.sub(r"([\n\r]+)([^\S\n\r]+)", "\\1", collapsed_spaces)
-    no_trailing_whitespace = re.sub(r"([^\S\n\r]+)$", "", no_leading_whitespace)
+    # Keep \f page breaks, but remove all other whitespace
+    collapsed_spaces = re.sub(r"([^\S\r\n\f]+)", " ", text)
+    no_leading_whitespace = re.sub(r"([\n\r]+)([^\S\n\r\f]+)", "\\1", collapsed_spaces)
+    no_trailing_whitespace = re.sub(r"([^\S\n\r\f]+)$", "", no_leading_whitespace)
 
     # TODO: this needs a rework
     # replace \0 prevents issues with saving to postgres.
